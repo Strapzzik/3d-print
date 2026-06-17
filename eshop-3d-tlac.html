@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FORMA3D — 3D tlačené produkty</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #18181f;
+    --border: rgba(255,255,255,0.07);
+    --accent: #7c6aff;
+    --accent2: #00e5c3;
+    --text: #f0eeff;
+    --muted: #7a7890;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Space Grotesk', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 2.5rem;
+    background: rgba(10,10,15,0.82);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .logo span { color: var(--accent); }
+  nav ul {
+    display: flex; gap: 2rem; list-style: none;
+  }
+  nav ul a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.88rem; letter-spacing: 0.04em;
+    font-weight: 500; transition: color .2s;
+  }
+  nav ul a:hover { color: var(--text); }
+  .nav-cta {
+    background: var(--accent);
+    color: #fff !important;
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    transition: opacity .2s !important;
+  }
+  .nav-cta:hover { opacity: 0.85; color: #fff !important; }
+  .cart-icon { position: relative; cursor: pointer; }
+  .cart-badge {
+    position: absolute; top: -6px; right: -8px;
+    background: var(--accent2); color: #000;
+    font-size: 0.65rem; font-weight: 700;
+    border-radius: 50%; width: 16px; height: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono);
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 7rem 2.5rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 40%, rgba(124,106,255,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(0,229,195,0.08) 0%, transparent 55%);
+  }
+  /* Animated grid lines */
+  .hero-grid {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(124,106,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,106,255,0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  }
+  .hero-inner {
+    position: relative; z-index: 1;
+    max-width: 680px;
+  }
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 1.4rem;
+    display: flex; align-items: center; gap: 0.7rem;
+  }
+  .hero-label::before {
+    content: '';
+    display: inline-block; width: 28px; height: 1px;
+    background: var(--accent2);
+  }
+  h1 {
+    font-size: clamp(2.8rem, 6vw, 5.2rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+  h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    color: var(--muted);
+    font-size: 1.08rem;
+    max-width: 480px;
+    margin-bottom: 2.5rem;
+    line-height: 1.7;
+  }
+  .hero-btns {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    padding: 0.85rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: transform .2s, box-shadow .2s;
+    box-shadow: 0 0 30px rgba(124,106,255,0.35);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 45px rgba(124,106,255,0.5);
+  }
+  .btn-outline {
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.85rem 2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: border-color .2s, background .2s;
+    background: var(--surface);
+  }
+  .btn-outline:hover { border-color: var(--accent); background: var(--surface2); }
+
+  /* STATS STRIP */
+  .stats-strip {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 1.8rem 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+  .stat {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+  }
+  .stat-n {
+    font-family: var(--mono);
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+  .stat-n span { color: var(--accent); }
+  .stat-l {
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    margin-top: 0.3rem;
+    text-transform: uppercase;
+  }
+
+  /* CATEGORIES */
+  section { padding: 5rem 2.5rem; }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  h2 {
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+  .section-sub {
+    color: var(--muted); font-size: 1rem; margin-bottom: 3rem;
+  }
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .cat-card {
+    background: var(--surface);
+    padding: 2.2rem;
+    cursor: pointer;
+    transition: background .2s;
+    text-decoration: none;
+    display: flex; flex-direction: column; gap: 0.8rem;
+  }
+  .cat-card:hover { background: var(--surface2); }
+  .cat-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+  .cat-card h3 {
+    font-size: 1.05rem; font-weight: 600; color: var(--text);
+  }
+  .cat-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+  .cat-arrow {
+    margin-top: auto;
+    font-size: 0.8rem;
+    color: var(--accent);
+    font-family: var(--mono);
+  }
+
+  /* PRODUCTS */
+  .products-section { background: var(--surface); }
+  .products-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 3rem; flex-wrap: wrap; gap: 1rem;
+  }
+  .filter-tabs {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+  }
+  .filter-tab {
+    padding: 0.45rem 1.1rem;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    transition: all .2s;
+    font-family: var(--sans);
+  }
+  .filter-tab.active, .filter-tab:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+  .product-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color .2s, transform .2s;
+    cursor: pointer;
+  }
+  .product-card:hover {
+    border-color: rgba(124,106,255,0.4);
+    transform: translateY(-4px);
+  }
+  .product-img {
+    aspect-ratio: 4/3;
+    background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .product-img::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 50%, rgba(10,10,15,0.6) 100%);
+  }
+  .badge {
+    position: absolute; top: 12px; left: 12px; z-index: 1;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+  }
+  .badge-new { background: var(--accent2); color: #000; }
+  .badge-sale { background: #ff4d6d; color: #fff; }
+  .badge-hot { background: var(--accent); color: #fff; }
+  .product-body { padding: 1.2rem; }
+  .product-meta {
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-family: var(--mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+  .product-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+  .product-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 1rem;
+  }
+  .price {
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .price-old {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-decoration: line-through;
+    margin-left: 0.4rem;
+  }
+  .add-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--sans);
+    transition: opacity .2s, transform .15s;
+  }
+  .add-btn:hover { opacity: 0.85; transform: scale(1.04); }
+  .stars { color: var(--accent2); font-size: 0.8rem; }
+  .review-count { color: var(--muted); font-size: 0.75rem; margin-left: 0.3rem; }
+
+  /* PROCESS */
+  .process-section {}
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+    position: relative;
+  }
+  .process-steps::before {
+    content: '';
+    position: absolute;
+    top: 28px; left: calc(12.5% + 20px); right: calc(12.5% + 20px);
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0.3;
+  }
+  .step {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; gap: 1rem;
+  }
+  .step-num {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 0.85rem; font-weight: 700;
+    color: var(--accent);
+    background: var(--bg);
+    position: relative; z-index: 1;
+  }
+  .step h3 { font-size: 0.95rem; font-weight: 600; }
+  .step p { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
+  /* MATERIALS */
+  .materials-section { background: var(--surface); }
+  .materials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+  .material-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.4rem;
+    text-align: center;
+    transition: border-color .2s;
+    cursor: pointer;
+  }
+  .material-card:hover { border-color: var(--accent2); }
+  .material-swatch {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    margin: 0 auto 0.8rem;
+    border: 2px solid var(--border);
+  }
+  .material-card h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.2rem; }
+  .material-card p { font-size: 0.75rem; color: var(--muted); }
+
+  /* TESTIMONIALS */
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+  .testimonial {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.8rem;
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+  .testimonial-text {
+    font-size: 0.92rem;
+    color: var(--text);
+    line-height: 1.7;
+    font-style: italic;
+  }
+  .testimonial-author {
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.85rem; color: #fff;
+    flex-shrink: 0;
+  }
+  .author-name { font-weight: 600; font-size: 0.88rem; }
+  .author-title { font-size: 0.75rem; color: var(--muted); }
+
+  /* CTA BANNER */
+  .cta-banner {
+    margin: 0 2.5rem 5rem;
+    background: linear-gradient(135deg, rgba(124,106,255,0.15) 0%, rgba(0,229,195,0.1) 100%);
+    border: 1px solid rgba(124,106,255,0.3);
+    border-radius: 16px;
+    padding: 4rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 2rem; flex-wrap: wrap;
+    position: relative; overflow: hidden;
+  }
+  .cta-banner::before {
+    content: '⬡';
+    position: absolute; right: 3rem; top: 50%;
+    transform: translateY(-50%);
+    font-size: 12rem;
+    opacity: 0.04;
+    color: var(--accent);
+    pointer-events: none;
+  }
+  .cta-banner h2 { margin-bottom: 0.4rem; }
+  .cta-banner p { color: var(--muted); max-width: 420px; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 2.5rem 2rem;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 2.5rem;
+  }
+  .footer-brand p {
+    color: var(--muted); font-size: 0.85rem;
+    margin-top: 0.8rem; line-height: 1.6; max-width: 220px;
+  }
+  footer h4 {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: var(--mono);
+    margin-bottom: 1rem;
+  }
+  footer ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  footer ul a { color: var(--text); font-size: 0.88rem; text-decoration: none; transition: color .2s; }
+  footer ul a:hover { color: var(--accent); }
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 2.5rem;
+    display: flex; justify-content: space-between;
+    font-size: 0.78rem; color: var(--muted);
+    font-family: var(--mono);
+  }
+  .socials { display: flex; gap: 0.7rem; }
+  .social-link {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; text-decoration: none;
+    transition: border-color .2s, background .2s;
+  }
+  .social-link:hover { border-color: var(--accent); background: var(--surface); }
+
+  /* NOTIFICATION */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 200;
+    background: var(--surface2);
+    border: 1px solid var(--accent2);
+    border-radius: 10px;
+    padding: 1rem 1.4rem;
+    font-size: 0.88rem;
+    display: flex; align-items: center; gap: 0.6rem;
+    transform: translateY(120%);
+    transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .toast.show { transform: translateY(0); }
+  .toast-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent2); flex-shrink: 0; }
+
+  @media (max-width: 900px) {
+    nav ul { display: none; }
+    .cat-grid { grid-template-columns: 1fr 1fr; }
+    .process-steps { grid-template-columns: 1fr 1fr; }
+    .process-steps::before { display: none; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    footer { grid-template-columns: 1fr 1fr; }
+    .stats-strip { grid-template-columns: 2fr 2fr; }
+  }
+  @media (max-width: 600px) {
+    nav { padding: 1rem 1.2rem; }
+    section { padding: 3.5rem 1.2rem; }
+    .hero { padding: 6rem 1.2rem 3rem; }
+    .stats-strip { padding: 1.5rem 1.2rem; }
+    .cat-grid { grid-template-columns: 1fr; }
+    .process-steps { grid-template-columns: 1fr; }
+    footer { grid-template-columns: 1fr; padding: 2.5rem 1.2rem 1.5rem; }
+    .footer-bottom { padding: 1.2rem; flex-direction: column; gap: 0.8rem; }
+    .cta-banner { margin: 0 1.2rem 3rem; padding: 2.5rem 1.5rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">FORMA<span>3D</span></a>
+  <ul>
+    <li><a href="#produkty">Produkty</a></li>
+    <li><a href="#materialy">Materiály</a></li>
+    <li><a href="#postup">Postup</a></li>
+    <li><a href="#" class="nav-cta">Vlastný návrh</a></li>
+    <li>
+      <span class="cart-icon" onclick="openCart()">
+        🛒 <span class="cart-badge" id="cart-count">0</span>
+      </span>
+    </li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <p class="hero-label">Slovenská výroba · FDM &amp; Resin</p>
+    <h1>Tlačíme<br>tvoje <em>nápady</em><br>do reality.</h1>
+    <p class="hero-sub">Prémiové 3D tlačené produkty z odolných materiálov. Od dizajnových doplnkov po funkčné prototypy — doručíme do 48 hodín.</p>
+    <div class="hero-btns">
+      <a href="#produkty" class="btn-primary">Prehliadať produkty</a>
+      <a href="#postup" class="btn-outline">Ako to funguje →</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="stat">
+    <div class="stat-n">1 200<span>+</span></div>
+    <div class="stat-l">zákazníkov</div>
+  </div>
+  <div class="stat">
+    <div class="stat-n">48<span>h</span></div>
+    <div class="stat-l">dodanie</div>
+  </div>
+  <div class="stat">
+    <div class="stat-n">12<span>+</span></div>
+    <div class="stat-l">materiálov</div>
+  </div>
+  <div class="stat">
+    <div class="stat-n">4.9<span>★</span></div>
+    <div class="stat-l">hodnotenie</div>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section>
+  <p class="section-label">Kolekcie</p>
+  <h2>Čo hľadáš?</h2>
+  <p class="section-sub">Vyber kategóriu alebo nám pošli vlastný návrh.</p>
+  <div class="cat-grid">
+    <a class="cat-card" href="#produkty">
+      <span class="cat-icon">🏠</span>
+      <h3>Bytové doplnky</h3>
+      <p>Vázy, svietidlá, stojany a dekorácie, ktoré sa nikde inde nekúpia.</p>
+      <span class="cat-arrow">Zobraziť →</span>
+    </a>
+    <a class="cat-card" href="#produkty">
+      <span class="cat-icon">⚙️</span>
+      <h3>Technické diely</h3>
+      <p>Náhradné diely, príchytky, kryty — tlačíme z PETG a ASA.</p>
+      <span class="cat-arrow">Zobraziť →</span>
+    </a>
+    <a class="cat-card" href="#produkty">
+      <span class="cat-icon">🎮</span>
+      <h3>Gaming &amp; Hobby</h3>
+      <p>Figúrky, stojany na kontrolery, organizéry na kábly.</p>
+      <span class="cat-arrow">Zobraziť →</span>
+    </a>
+    <a class="cat-card" href="#produkty">
+      <span class="cat-icon">🎁</span>
+      <h3>Personalizované darčeky</h3>
+      <p>Unikátny predmet s tvojím textom, fotografiou alebo logom.</p>
+      <span class="cat-arrow">Zobraziť →</span>
+    </a>
+    <a class="cat-card" href="#produkty">
+      <span class="cat-icon">🏢</span>
+      <h3>Firmy &amp; Prototypy</h3>
+      <p>Rýchle prototypovanie pre startupy aj zavedené firmy.</p>
+      <span class="cat-arrow">Zobraziť →</span>
+    </a>
+    <a class="cat-card" href="#produkty">
+      <span class="cat-icon">🌿</span>
+      <h3>Eko materiály</h3>
+      <p>Tlač z recyklovaného PLA a biokompostovateľných filamentov.</p>
+      <span class="cat-arrow">Zobraziť →</span>
+    </a>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products-section" id="produkty">
+  <div class="products-header">
+    <div>
+      <p class="section-label">Produkty</p>
+      <h2>Najpredávanejšie</h2>
+    </div>
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="filterProducts(this, 'vsetky')">Všetky</button>
+      <button class="filter-tab" onclick="filterProducts(this, 'byvanie')">Bývanie</button>
+      <button class="filter-tab" onclick="filterProducts(this, 'technika')">Technika</button>
+      <button class="filter-tab" onclick="filterProducts(this, 'darceky')">Darčeky</button>
+    </div>
+  </div>
+  <div class="products-grid" id="products-grid">
+
+    <div class="product-card" data-cat="byvanie">
+      <div class="product-img">
+        🏺
+        <span class="badge badge-new">NOVÉ</span>
+      </div>
+      <div class="product-body">
+        <p class="product-meta">Bytové doplnky · PLA+</p>
+        <p class="product-name">Geometrická váza Hexa</p>
+        <div><span class="stars">★★★★★</span><span class="review-count">(48)</span></div>
+        <div class="product-footer">
+          <div><span class="price">18,90 €</span></div>
+          <button class="add-btn" onclick="addToCart()">+ Košík</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="byvanie">
+      <div class="product-img">
+        💡
+        <span class="badge badge-hot">BESTSELLER</span>
+      </div>
+      <div class="product-body">
+        <p class="product-meta">Osvetlenie · PETG</p>
+        <p class="product-name">Tienidlo Lattice S</p>
+        <div><span class="stars">★★★★★</span><span class="review-count">(127)</span></div>
+        <div class="product-footer">
+          <div><span class="price">34,50 €</span></div>
+          <button class="add-btn" onclick="addToCart()">+ Košík</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="technika">
+      <div class="product-img">
+        🎮
+        <span class="badge badge-sale">−20%</span>
+      </div>
+      <div class="product-body">
+        <p class="product-meta">Gaming · ABS</p>
+        <p class="product-name">Stojan PS5 Controller</p>
+        <div><span class="stars">★★★★☆</span><span class="review-count">(33)</span></div>
+        <div class="product-footer">
+          <div><span class="price">11,20 €</span> <span class="price-old">13,90 €</span></div>
+          <button class="add-btn" onclick="addToCart()">+ Košík</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="darceky">
+      <div class="product-img">🧩</div>
+      <div class="product-body">
+        <p class="product-meta">Darčeky · Resin</p>
+        <p class="product-name">Personalizovaná kocka</p>
+        <div><span class="stars">★★★★★</span><span class="review-count">(91)</span></div>
+        <div class="product-footer">
+          <div><span class="price">24,00 €</span></div>
+          <button class="add-btn" onclick="addToCart()">+ Košík</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="byvanie">
+      <div class="product-img">
+        📐
+        <span class="badge badge-new">NOVÉ</span>
+      </div>
+      <div class="product-body">
+        <p class="product-meta">Organizácia · PLA</p>
+        <p class="product-name">Stolový organizér Grid</p>
+        <div><span class="stars">★★★★★</span><span class="review-count">(62)</span></div>
+        <div class="product-footer">
+          <div><span class="price">16,50 €</span></div>
+          <button class="add-btn" onclick="addToCart()">+ Košík</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="technika">
+      <div class="product-img">⚙️</div>
+      <div class="product-body">
+        <p class="product-meta">Technika · PETG</p>
+        <p class="product-name">Kábel Management Kit</p>
+        <div><span class="stars">★★★★☆</span><span class="review-count">(19)</span></div>
+        <div class="product-footer">
+          <div><span class="price">8,90 €</span></div>
+          <button class="add-btn" onclick="addToCart()">+ Košík</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="darceky">
+      <div class="product-img">
+        🌸
+        <span class="badge badge-hot">POPULAR</span>
+      </div>
+      <div class="product-body">
+        <p class="product-meta">Darčeky · PLA+</p>
+        <p class="product-name">Kvetinový rám na foto</p>
+        <div><span class="stars">★★★★★</span><span class="review-count">(77)</span></div>
+        <div class="product-footer">
+          <div><span class="price">14,90 €</span></div>
+          <button class="add-btn" onclick="addToCart()">+ Košík</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="byvanie">
+      <div class="product-img">🕯️</div>
+      <div class="product-body">
+        <p class="product-meta">Bytové doplnky · Resin</p>
+        <p class="product-name">Svietnik Lunar</p>
+        <div><span class="stars">★★★★★</span><span class="review-count">(54)</span></div>
+        <div class="product-footer">
+          <div><span class="price">22,00 €</span></div>
+          <button class="add-btn" onclick="addToCart()">+ Košík</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="postup">
+  <p class="section-label">Ako to funguje</p>
+  <h2>Od nápadu k produktu</h2>
+  <p class="section-sub">Jednoduchý postup v 4 krokoch.</p>
+  <div class="process-steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Vyber alebo nahraj</h3>
+      <p>Zvol hotový produkt alebo nahraj vlastný STL / OBJ súbor.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Nastav parametre</h3>
+      <p>Materiál, farba, výplň a povrchová úprava podľa tvojich potrieb.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Potvrdíme a tlačíme</h3>
+      <p>Spracujeme objednávku do 2 hodín a začneme tlač.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h3>Doručíme k tebe</h3>
+      <p>Poštou alebo kuriérom do 48 hodín priamo na tvoju adresu.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MATERIALS -->
+<section class="materials-section" id="materialy">
+  <p class="section-label">Materiály</p>
+  <h2>Z čoho tlačíme</h2>
+  <p class="section-sub">Každý materiál má svoje vlastnosti — poradíme, čo je pre tvoj projekt najlepšie.</p>
+  <div class="materials-grid">
+    <div class="material-card">
+      <div class="material-swatch" style="background: linear-gradient(135deg,#a8edea,#fed6e3);"></div>
+      <h4>PLA+</h4>
+      <p>Ekologický, ostrý detail, ideálny na dekorácie</p>
+    </div>
+    <div class="material-card">
+      <div class="material-swatch" style="background: linear-gradient(135deg,#4facfe,#00f2fe);"></div>
+      <h4>PETG</h4>
+      <p>Odolný, flexibilný, vhodný na technické diely</p>
+    </div>
+    <div class="material-card">
+      <div class="material-swatch" style="background: linear-gradient(135deg,#f7797d,#FBD786);"></div>
+      <h4>ABS</h4>
+      <p>Tvrdý, tepelne odolný, profesionálna kvalita</p>
+    </div>
+    <div class="material-card">
+      <div class="material-swatch" style="background: linear-gradient(135deg,#c471f5,#fa71cd);"></div>
+      <h4>Resin</h4>
+      <p>Ultravysoké rozlíšenie, hladký povrch, figúrky</p>
+    </div>
+    <div class="material-card">
+      <div class="material-swatch" style="background: linear-gradient(135deg,#43e97b,#38f9d7);"></div>
+      <h4>Eko PLA</h4>
+      <p>Biokompostovateľný, z obnoviteľných zdrojov</p>
+    </div>
+    <div class="material-card">
+      <div class="material-swatch" style="background: linear-gradient(135deg,#667eea,#764ba2);"></div>
+      <h4>TPU</h4>
+      <p>Gumový, ohybný, odolný voči nárazu</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section>
+  <p class="section-label">Recenzie</p>
+  <h2>Čo hovoria zákazníci</h2>
+  <div class="testimonials-grid">
+    <div class="testimonial">
+      <p class="testimonial-text">"Objednala som personalizovanú vázu a prišla presne tak, ako som si predstavovala. Kvalita tlače je fantastická, jemné detaily sú dokonale vypracované."</p>
+      <div class="testimonial-author">
+        <div class="avatar">MK</div>
+        <div>
+          <div class="author-name">Mária Kováčová</div>
+          <div class="author-title"><span class="stars">★★★★★</span> · Bytové doplnky</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial">
+      <p class="testimonial-text">"Rýchle dodanie, perfektná komunikácia. Potreboval som náhradný diel na 3D tlačiareň a do 24 hodín som mal v ruke presne to, čo som potreboval."</p>
+      <div class="testimonial-author">
+        <div class="avatar">TP</div>
+        <div>
+          <div class="author-name">Tomáš Procházka</div>
+          <div class="author-title"><span class="stars">★★★★★</span> · Technické diely</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial">
+      <p class="testimonial-text">"Pre našu firmu tlačia prototypy. Cena je výborná, kvalita zodpovedá SLA tlači. Odporúčam všetkým startupom, ktorí potrebujú rýchle výsledky."</p>
+      <div class="testimonial-author">
+        <div class="avatar">JH</div>
+        <div>
+          <div class="author-name">Jana Horáková</div>
+          <div class="author-title"><span class="stars">★★★★★</span> · Prototypovanie</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<div class="cta-banner">
+  <div>
+    <h2>Máš vlastný návrh?</h2>
+    <p>Nahraj STL súbor, zvolíš materiál a farbu — dostaneš cenovú ponuku do 2 hodín.</p>
+  </div>
+  <a href="#" class="btn-primary">Nahrať súbor →</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <a href="#" class="logo">FORMA<span>3D</span></a>
+    <p>Slovenský výrobca prémiových 3D tlačených produktov. Tlačíme s láskou od roku 2021.</p>
+    <div class="socials" style="margin-top:1rem;">
+      <a class="social-link" href="#">𝕏</a>
+      <a class="social-link" href="#">in</a>
+      <a class="social-link" href="#">ig</a>
+    </div>
+  </div>
+  <div>
+    <h4>Produkty</h4>
+    <ul>
+      <li><a href="#">Bytové doplnky</a></li>
+      <li><a href="#">Technické diely</a></li>
+      <li><a href="#">Darčeky</a></li>
+      <li><a href="#">Vlastný návrh</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Informácie</h4>
+    <ul>
+      <li><a href="#">O nás</a></li>
+      <li><a href="#">Materiály</a></li>
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">Kontakt</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Podpora</h4>
+    <ul>
+      <li><a href="#">Sledovanie objednávky</a></li>
+      <li><a href="#">Doprava &amp; vrátenie</a></li>
+      <li><a href="#">FAQ</a></li>
+      <li><a href="#">Obchodné podmienky</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2025 FORMA3D s.r.o. · Všetky práva vyhradené</span>
+  <span>Vyrobené na Slovensku 🇸🇰</span>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span>Produkt bol pridaný do košíka!</span>
+</div>
+
+<script>
+  let cartCount = 0;
+
+  function addToCart() {
+    cartCount++;
+    document.getElementById('cart-count').textContent = cartCount;
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2800);
+  }
+
+  function openCart() {
+    alert(`Máš ${cartCount} produkt(ov) v košíku.\n(Platobný systém by bol tu 🛒)`);
+  }
+
+  function filterProducts(btn, cat) {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.product-card').forEach(card => {
+      if (cat === 'vsetky' || card.dataset.cat === cat) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  // Subtle fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.product-card, .step, .material-card, .testimonial').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity .5s ease, transform .5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
